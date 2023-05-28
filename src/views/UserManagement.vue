@@ -1,0 +1,317 @@
+<template>
+  <div id="app">
+    <body>
+      <header>
+        <div class="logo-container">
+        <img class="logo" alt="Logo" src="../assets/logo-pentagro.png">
+        </div>
+      </header>
+      <menu>
+        <p class="menu-title">GESTÃO DE USUÁRIOS</p>
+        <button class="exit-button" id="exit-button">SAIR</button>
+      </menu>
+      <main>
+        <form class="user-management-form">
+          <div class="form-container" id="user-management-form-container">
+            <fieldset class="fieldset" id="user-manager-fieldset">
+              <div class="row">
+                <div class="field"> 
+                  <input type="text" class="text-input" id="new-user-input" placeholder="USUÁRIO" required>
+                </div>
+                <div class="field">
+                  <select class="unit-select" id="unit-select" name="unit">
+                    <option>SELECIONE A UNIDADE</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="field">
+                  <input type="password" class="password-input" id="new-password-input" placeholder="SENHA" required>
+                </div>
+                <div class="field">
+                  <input type="text" class="text-input" id="name-input" placeholder="NOME COMPLETO" required>
+                </div>
+              </div>
+              <div class="row">
+                <div class="field">
+                  <input type="password" class="password-input" id="confirm-password-input" placeholder="CONFIRME SUA SENHA" required>
+                </div>
+                <div class="field">
+                  <input type="email" class="text-input" id="email-input" placeholder="E-MAIL" required>
+                </div>
+              </div>
+              <div class="row">
+                <div class="field">
+                  <button class="decrease-token-time">-</button>
+                  <input type="number" class="token-time-input" id="token-time-input" placeholder="TEMPO DE TOKEN" min="0" max="24"/>
+                  <button class="increase-token-time">+</button>
+                </div>
+              </div>
+              <div class="row">
+                <div class="field">
+                  <label class="toggle-input-container" id="receive-alerts-input">
+                    RECEBER ALERTAS
+                    <input type="checkbox" class="toggle-input-button">
+                    <div class="slider-area">
+                      <button class="slider-button"></button>
+                    </div>
+                  </label>
+                </div>
+                <div class="field" id="treat-occurrences-input">
+                  <label class="toggle-input-container">
+                    TRATAR OCORRENCIAS
+                    <input type="checkbox" class="toggle-input-button">
+                    <div class="slider-area">
+                      <button class="slider-button"></button>
+                    </div>
+                  </label>
+                </div>
+                <div class="field" id="disable-user-input">
+                  <label class="toggle-input-container">
+                    DESABILITAR USUÁRIO
+                    <input type="checkbox" class="toggle-input-button">
+                    <div class="slider-area">
+                      <button class="slider-button"></button>
+                    </div>
+                  </label>
+              </div>
+              </div>
+            </fieldset> 
+          </div>
+          <div class="buttons-row">
+            <button type="submit" class="form-submit-button" id="user-management-form-submit-button">SALVAR</button>
+            <button type="reset" class="form-cancel-button" id="user-management-form-cancel-button">CANCELAR</button>
+          </div>
+        </form>
+        <div class="users-table-container"> 
+          <table class="users-table" id="users-table"> 
+            <thead class="user-table-head">
+              <tr>
+                <th>CÓDIGO</th>
+                <th>NOME</th>
+                <th>E-MAIL</th>
+                <th>STATUS</th>
+                <th>AÇÕES</th>
+              </tr>
+            </thead>
+            <tbody class="user-table-body">
+              <tr class="user-table-item">
+                <td class="cell">01</td>
+                <td class="cell">Pentagro</td>
+                <td class="cell">penta@penta.com.br</td>
+                <td class="cell">Ativo</td>
+                <td class="cell"> <div class="edit-button-container"> <button class="edit-user">EDITAR</button> </div> </td>
+              </tr>
+            </tbody> 
+          </table>
+        </div>
+      </main>
+      <footer></footer>
+    </body>
+  </div>
+</template>
+
+<script>
+import '../styles/global.css'
+
+export default {
+}
+</script>
+
+<style scoped>
+body {
+  grid-template-rows: 75px 55px 1fr 45px;
+  grid-template-areas: 'header' 'menu' 'content' 'footer';
+}
+
+menu {
+  grid-area: menu;
+  background-color: #333333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.menu-title {
+  margin-left: 15px;
+  font-size: 25px;
+  color: var(--font-light-color);
+}
+
+.exit-button {
+  color: var(--dark-color);
+  font-size: 25px;
+  background: #d6d6d6;
+  margin-right: 15px;
+  width: 90px;
+  padding: 4px;
+}
+
+.exit-button:hover {
+  background-color: #f5f5f5f5;
+}
+
+.form-container {
+  max-width: 1000px;
+  padding: 20px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.field {
+  flex-basis: 100%; /* Estudar mais sobre */
+  margin: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.password-input, 
+.text-input {
+    width: 370px;
+}
+
+.unit-select {
+  width: 400px;
+}
+
+.decrease-token-time,
+.increase-token-time{
+  color: var(--dark-color);
+  background-color: #d6d6d6;
+  font-size: 22px;
+  width: 20px;
+  height: 54px;
+}
+
+.toggle-input-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+}
+.slider-area {
+  background-color: #d6d6d6;
+  width: 40px;
+  height: 20px;
+  border: 2px solid #999999;
+  margin-left: 10px;
+  border-radius: 20px;
+  cursor: pointer;
+  position: relative;
+  transition: all 300ms ease-in-out;
+}
+
+.slider-button {
+  background-color: #ee7527;
+  border: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  pointer-events: none;
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  transition: all 300ms ease-in-out;
+}
+
+.toggle-input-button {
+  display: none;
+}
+
+.toggle-input-button:checked ~ .slider-area {
+  background-color: #ee7527;
+}
+
+.toggle-input-button:checked ~ .slider-area > .slider-button {
+  background-color: #ccc;
+  left: 23px;
+}
+
+.buttons-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.form-cancel-button,
+.form-submit-button {
+    color: var(--font-light-color);
+}
+
+.form-cancel-button {
+  background-color: #ef2917;
+}
+
+.form-cancel-button:hover {
+  background-color: #f24f40;
+}
+
+.form-submit-button {
+  background-color: #008148;
+}
+
+.form-submit-button:hover {
+    background-color: #00a35a;
+}
+.users-table-container {
+    max-width: 900px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: #eef0f2;
+    display: flex;
+    border-radius: 3px;
+    box-shadow: 0px 0px 20px rgba(0.8, 0.8, 0.8, 0.8);
+    color: var(--dark-color);
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+.users-table {
+  width: 800px;
+  font-size: 20px;
+  padding: 20px;
+  border-collapse: collapse;
+  border-spacing: 0;
+  border: 2px solid #b8b8b8;
+  /* border-bottom: 3px solid #ee7527; */
+}
+
+.user-table-head {
+  background-color: #b8b8b8;
+  height: 40px;
+}
+
+.user-table-item {
+  height: 40px;
+}
+
+td {
+  border: 2px solid #b8b8b8;
+  padding-left: 3px;
+}
+
+.edit-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.edit-user {
+  color: var(--font-light-color);
+  padding: 5px;
+  width: 60px;
+  background-color: #ee7527;
+}
+
+.edit-user:hover {
+  background-color: #F08945;
+}
+</style>
