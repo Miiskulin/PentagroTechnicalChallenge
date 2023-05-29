@@ -44,21 +44,17 @@ export default {
             "Username": Base64.encode(this.username),
             "UserPassword": Base64.encode(md5(this.password))
             }
-            console.log(param)
 
             axios
             .post("http://144.22.150.202:65129/api/user/login", param)
             .then((response) => { 
             const token = response.data
-            console.log(token)
-            localStorage.setItem('token', response.data);
+            localStorage.setItem('Token', token);
             window.location.href ='http://localhost:8080/usermanagement'
             alert("Login realizado com sucesso!")
             })
-            .catch((error) => {
-                this.errorMessage = error.Message
-                alert("Falha no login! Verifique as credenciais ou sua conexão com o servidor.")
-            })
+            .catch(() => {
+                alert("Falha no login! Verifique as credenciais ou sua conexão com o servidor.")})
         }
     }
 }

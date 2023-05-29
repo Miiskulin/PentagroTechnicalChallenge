@@ -8,7 +8,7 @@
       </header>
       <menu>
         <p class="menu-title">GESTÃO DE USUÁRIOS</p>
-        <button class="exit-button" id="exit-button">SAIR</button>
+        <button class="exit-button" id="exit-button" @click.prevent="exit">SAIR</button>
       </menu>
       <main>
         <form class="user-management-form">
@@ -16,34 +16,34 @@
             <fieldset class="fieldset" id="user-manager-fieldset">
               <div class="row">
                 <div class="field"> 
-                  <input type="text" class="text-input" id="new-user-input" placeholder="USUÁRIO" required>
+                  <input type="text" class="text-input" id="new-user-input" v-model="selectedUser.userName" placeholder="USUÁRIO" required>
                 </div>
                 <div class="field">
                   <select class="unit-select" id="unit-select" name="unit">
-                    <option>SELECIONE A UNIDADE</option>
+                    <option>SELECIONE A UNIDADEx</option>
                   </select>
                 </div>
               </div>
               <div class="row">
                 <div class="field">
-                  <input type="password" class="password-input" id="new-password-input" placeholder="SENHA" required>
+                  <input type="password" class="password-input" id="new-password-input" v-model="selectedUser.userPassword" placeholder="SENHA" required>
                 </div>
                 <div class="field">
-                  <input type="text" class="text-input" id="name-input" placeholder="NOME COMPLETO" required>
+                  <input type="text" class="text-input" id="name-input" v-model="selectedUser.name" placeholder="NOME COMPLETO" required>
                 </div>
               </div>
               <div class="row">
                 <div class="field">
-                  <input type="password" class="password-input" id="confirm-password-input" placeholder="CONFIRME SUA SENHA" required>
+                  <input type="password" class="password-input" id="confirm-password-input" v-model="selectedUser.confirmUserPassword" placeholder="CONFIRME SUA SENHA" required>
                 </div>
                 <div class="field">
-                  <input type="email" class="text-input" id="email-input" placeholder="E-MAIL" required>
+                  <input type="email" class="text-input" id="email-input" v-model="selectedUser.email" placeholder="E-MAIL" required>
                 </div>
               </div>
               <div class="row">
                 <div class="field">
                   <button class="decrease-token-time" @click.prevent="decreaseTokenTime">-</button>
-                  <input type="number" class="token-time-input" id="token-time-input" v-model="tokenTime" placeholder="TEMPO DE TOKEN"/>
+                  <input type="number" class="token-time-input" id="token-time-input" v-model="selectedUser.loginExpiration" placeholder="TEMPO DE TOKEN"/>
                   <button class="increase-token-time" @click.prevent="increaseTokenTime">+</button>
                 </div>
               </div>
@@ -51,7 +51,7 @@
                 <div class="field">
                   <label class="toggle-input-container" id="receive-alerts-input">
                     RECEBER ALERTAS
-                    <input type="checkbox" class="toggle-input-button">
+                    <input type="checkbox" class="toggle-input-button" v-model="selectedUser.receiveAutonomousWarning">
                     <div class="slider-area">
                       <button class="slider-button"></button>
                     </div>
@@ -60,7 +60,7 @@
                 <div class="field" id="treat-occurrences-input">
                   <label class="toggle-input-container">
                     TRATAR OCORRENCIAS
-                    <input type="checkbox" class="toggle-input-button">
+                    <input type="checkbox" class="toggle-input-button" v-model="selectedUser.improveTeamMember">
                     <div class="slider-area">
                       <button class="slider-button"></button>
                     </div>
@@ -69,7 +69,7 @@
                 <div class="field" id="disable-user-input">
                   <label class="toggle-input-container">
                     DESABILITAR USUÁRIO
-                    <input type="checkbox" class="toggle-input-button">
+                    <input type="checkbox" class="toggle-input-button" v-model="selectedUser.disabled">
                     <div class="slider-area">
                       <button class="slider-button"></button>
                     </div>
@@ -121,10 +121,38 @@ import  '../styles/global.css'
 export default {
   data() {
     return{ 
-      tokenTime: null
+      selectedUser: {
+        userName: "",
+        name: "",
+        userPassword: "",
+        confirmUserPassword: "",
+        email: "",
+        supervisor: false,
+        receiveAutonomousWarning: false,
+        loginExpiration: 0,
+        disabled: false,
+        unitId: null 
+      }
     }
   },
-  methods:{
+
+  // mounted() {
+  //   document.body.innerHTML = 'Aguarde enquanto verificamos sua autenticação...';
+  //   setTimeout(() => {
+  //     if (localStorage.getItem('token')) {
+       
+  //     } else {
+  //       alert('Você precisa estar logado para acessar esta página!');
+  //       window.location.href = 'http://localhost:8080';
+  //     }
+  //   }, 1000); 
+  // },
+
+  methods:{ 
+    exit(){
+      localStorage.removeItem('Token') 
+      window.location.href = 'http://localhost:8080'
+    },
     increaseTokenTime(){
       if(this.tokenTime < 24){ 
       this.tokenTime++
