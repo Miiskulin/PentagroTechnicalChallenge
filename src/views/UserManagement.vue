@@ -42,9 +42,9 @@
               </div>
               <div class="row">
                 <div class="field">
-                  <button class="decrease-token-time">-</button>
-                  <input type="number" class="token-time-input" id="token-time-input" placeholder="TEMPO DE TOKEN" min="0" max="24"/>
-                  <button class="increase-token-time">+</button>
+                  <button class="decrease-token-time" @click.prevent="decreaseTokenTime">-</button>
+                  <input type="number" class="token-time-input" id="token-time-input" v-model="tokenTime" placeholder="TEMPO DE TOKEN"/>
+                  <button class="increase-token-time" @click.prevent="increaseTokenTime">+</button>
                 </div>
               </div>
               <div class="row">
@@ -112,10 +112,32 @@
 </template>
 
 <script>
-import '../styles/global.css'
+import  '../styles/global.css'
+// import api from '../services/api.js'
+// import { Base64 } from 'js-base64'
+// import md5 from 'js-md5'
+// import axios from 'axios'
 
 export default {
+  data() {
+    return{ 
+      tokenTime: null
+    }
+  },
+  methods:{
+    increaseTokenTime(){
+      if(this.tokenTime < 24){ 
+      this.tokenTime++
+      }
+    },
+    decreaseTokenTime() {
+      if(this.tokenTime > 0) {
+        this.tokenTime--
+      }
+    }
+  }
 }
+
 </script>
 
 <style scoped>
@@ -189,6 +211,20 @@ menu {
   width: 20px;
   height: 54px;
 }
+
+.token-time-input {
+  width: 115px;
+  text-align: center;
+}
+
+.token-time-input::-webkit-outer-spin-button,
+.token-time-input::-webkit-inner-spin-button{
+  -webkit-appearance: none;
+}
+
+/* .token-time-input[type=number]{
+  -moz-appearance: textfield;
+} */
 
 .toggle-input-container {
   display: flex;

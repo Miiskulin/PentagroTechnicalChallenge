@@ -25,9 +25,10 @@
 
 <script>
 import  '../styles/global.css'
-// import api from '..services/api.js'
+// import api from '../services/api.js'
 import { Base64 } from 'js-base64'
 import md5 from 'js-md5'
+import axios from 'axios'
 
 export default {
     data() {
@@ -38,13 +39,26 @@ export default {
     },
 
     methods: {  
-        login() {
+       async login() {
             const param = {  
             "Username": Base64.encode(this.username),
-            "UserPasssword": Base64.encode(md5(this.password))
+            "UserPassword": Base64.encode(md5(this.password))
             }
+            console.log(param)
 
-            console.log("login")
+            axios
+            .post("http://144.22.150.202:65129/api/user/login", param)
+            .then((response) => { 
+            const token = response.data
+            console.log(token)
+            localStorage.setItem('token', response.data);
+            window.location.href ='http://localhost:8080/usermanagement'
+            alert("Login realizado com sucesso!")
+            })
+            .catch((error) => {
+                this.errorMessage = error.Message
+                alert("Falha no login! Verifique as credenciais ou sua conexão com o servidor.")
+            })
         }
     }
 }
