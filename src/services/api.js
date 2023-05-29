@@ -1,7 +1,7 @@
-import axios from "axios"
+// import axios from "axios"
 
-const api = axios.create({
-    baseURL: 'http://144.22.150.202:65129/api/user/login'
-})
+// const api = axios.create({
+//     baseURL: 'http://144.22.150.202:65129/api/user/login'
+// })
 
-export default api
+// export default api
