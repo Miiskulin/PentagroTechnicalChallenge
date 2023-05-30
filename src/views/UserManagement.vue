@@ -19,8 +19,9 @@
                   <input type="text" class="text-input" id="new-user-input" v-model="selectedUser.userName" placeholder="USUÁRIO" required>
                 </div>
                 <div class="field">
-                  <select class="unit-select" id="unit-select" name="unit">
-                    <option>SELECIONE A UNIDADEx</option>
+                  <select class="unit-select" id="unit-select" @click.prevent="getProductionUnitList" v-model="selectedUser.unitId" name="unit">
+                    <option>SELECIONE A UNIDADE</option>
+                    <option v-for="unit in productionUnitList" :key="unit.name" :value="unit.id">{{ unit.name }}</option>
                   </select>
                 </div>
               </div>
@@ -116,11 +117,12 @@ import  '../styles/global.css'
 // import api from '../services/api.js'
 // import { Base64 } from 'js-base64'
 // import md5 from 'js-md5'
-// import axios from 'axios'
+import axios from 'axios'
 
 export default {
   data() {
-    return{ 
+    return{
+      productionUnitList: [],
       selectedUser: {
         userName: "",
         name: "",
@@ -136,7 +138,7 @@ export default {
     }
   },
 
-  // mounted() {
+  mounted() {
   //   document.body.innerHTML = 'Aguarde enquanto verificamos sua autenticação...';
   //   setTimeout(() => {
   //     if (localStorage.getItem('token')) {
@@ -146,21 +148,35 @@ export default {
   //       window.location.href = 'http://localhost:8080';
   //     }
   //   }, 1000); 
-  // },
+
+
+  },
 
   methods:{ 
     exit(){
       localStorage.removeItem('Token') 
       window.location.href = 'http://localhost:8080'
     },
+    getProductionUnitList(){
+      const token = localStorage.getItem('Token')
+    
+    axios
+    .get("http://144.22.150.202:65129/api/user/getproductionunitlist", {
+      headers:
+        {"Authorization": `Bearer ${token}`}
+    })
+    .then((response) => {  
+    this.productionUnitList = response.data.productionUnitList
+    })
+    },
     increaseTokenTime(){
-      if(this.tokenTime < 24){ 
-      this.tokenTime++
+      if(this.selectedUser.loginExpiration < 24){ 
+      this.selectedUser.loginExpiration++
       }
     },
     decreaseTokenTime() {
-      if(this.tokenTime > 0) {
-        this.tokenTime--
+      if(this.selectedUser.loginExpiration > 0) {
+        this.selectedUser.loginExpiration--
       }
     }
   }
