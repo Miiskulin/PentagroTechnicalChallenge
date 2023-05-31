@@ -19,8 +19,8 @@
                   <input type="text" class="text-input" id="new-user-input" v-model="selectedUser.userName" placeholder="USUÁRIO" required>
                 </div>
                 <div class="field">
-                  <select class="unit-select" id="unit-select" @click.prevent="getProductionUnitList" v-model="selectedUser.unitId" name="unit">
-                    <option>SELECIONE A UNIDADE</option>
+                  <select class="unit-select" v-model="selectedUser.unitId">
+                    <option disabled value="null">SELECIONE A UNIDADE</option>
                     <option v-for="unit in productionUnitList" :key="unit.name" :value="unit.id">{{ unit.name }}</option>
                   </select>
                 </div>
@@ -113,8 +113,8 @@
 </template>
 
 <script>
-import  '../styles/global.css'
-// import api from '../services/api.js'
+import  '../styles/defaultStyles.css'
+import api from '../services/api.js'
 // import { Base64 } from 'js-base64'
 // import md5 from 'js-md5'
 import axios from 'axios'
@@ -139,17 +139,7 @@ export default {
   },
 
   mounted() {
-  //   document.body.innerHTML = 'Aguarde enquanto verificamos sua autenticação...';
-  //   setTimeout(() => {
-  //     if (localStorage.getItem('token')) {
-       
-  //     } else {
-  //       alert('Você precisa estar logado para acessar esta página!');
-  //       window.location.href = 'http://localhost:8080';
-  //     }
-  //   }, 1000); 
-
-
+    this.getProductionUnitList()
   },
 
   methods:{ 
@@ -157,11 +147,12 @@ export default {
       localStorage.removeItem('Token') 
       window.location.href = 'http://localhost:8080'
     },
+
     getProductionUnitList(){
       const token = localStorage.getItem('Token')
     
     axios
-    .get("http://144.22.150.202:65129/api/user/getproductionunitlist", {
+    .get(api + '/getproductionunitlist', {
       headers:
         {"Authorization": `Bearer ${token}`}
     })
@@ -169,11 +160,13 @@ export default {
     this.productionUnitList = response.data.productionUnitList
     })
     },
+
     increaseTokenTime(){
       if(this.selectedUser.loginExpiration < 24){ 
       this.selectedUser.loginExpiration++
       }
     },
+
     decreaseTokenTime() {
       if(this.selectedUser.loginExpiration > 0) {
         this.selectedUser.loginExpiration--

@@ -24,8 +24,8 @@
 </template>
 
 <script>
-import  '../styles/global.css'
-// import api from '../services/api.js'
+import  '../styles/defaultStyles.css'
+import api from '../services/api.js'
 import { Base64 } from 'js-base64'
 import md5 from 'js-md5'
 import axios from 'axios'
@@ -46,7 +46,7 @@ export default {
             }
 
             axios
-            .post("http://144.22.150.202:65129/api/user/login", param)
+            .post(api + '/login', param)
             .then((response) => { 
             const token = response.data
             localStorage.setItem('Token', token);
