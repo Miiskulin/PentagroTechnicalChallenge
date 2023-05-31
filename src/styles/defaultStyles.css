@@ -22,24 +22,6 @@ body {
     overflow: visible;
 }
 
-header {
-    grid-area: header;
-    background-color: var(--dark-color);
-}
-
-.logo-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.logo {
-    max-width:90px;
-    max-height:70px;
-    width: auto;
-    height: auto;
-}
-
 main {
     grid-area: content;
     background-color: #daddd8;
@@ -113,9 +95,4 @@ main {
     transition: 0.2s;
     cursor: pointer;  
     /* box-shadow: 0px 0px 30px rgba(0.4, 0.4, 0.4, 0.4); */
-}
-
-footer {
-    grid-area: footer;
-    background-color: var(--dark-color);
 }

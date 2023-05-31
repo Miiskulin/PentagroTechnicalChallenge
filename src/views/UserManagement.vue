@@ -2,9 +2,7 @@
   <div id="app">
     <body>
       <header>
-        <div class="logo-container">
-        <img class="logo" alt="Logo" src="../assets/logo-pentagro.png">
-        </div>
+        <HeaderComponent/>
       </header>
       <menu>
         <p class="menu-title">GESTÃO DE USUÁRIOS</p>
@@ -107,19 +105,27 @@
           </table>
         </div>
       </main>
-      <footer></footer>
+      <footer>
+        <FooterComponent/>
+      </footer>
     </body>
   </div>
 </template>
 
 <script>
 import  '../styles/defaultStyles.css'
+import HeaderComponent from '../components/HeaderComponent.vue'
+import FooterComponent from '../components/FooterComponent.vue'
 import api from '../services/api.js'
 // import { Base64 } from 'js-base64'
 // import md5 from 'js-md5'
 import axios from 'axios'
 
 export default {
+  components: {
+        HeaderComponent,
+        FooterComponent
+    },
   data() {
     return{
       productionUnitList: [],
