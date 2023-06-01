@@ -27,7 +27,7 @@
 import '../styles/defaultStyles.css'
 import HeaderComponent from '../components/HeaderComponent.vue'
 import FooterComponent from '../components/FooterComponent.vue'
-import api from '../services/api.js'
+import api from '../utilities/global.js'
 import { Base64 } from 'js-base64'
 import md5 from 'js-md5'
 import axios from 'axios'
@@ -57,7 +57,6 @@ export default {
             const token = response.data
             localStorage.setItem('Token', token);
             window.location.href ='http://localhost:8080/usermanagement'
-            alert("Login realizado com sucesso!")
             })
             .catch(() => {
                 alert("Falha no login! Verifique as credenciais ou sua conexão com o servidor.")})

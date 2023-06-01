@@ -7,6 +7,8 @@
 </template>
 
 <script>
+import '../styles/defaultStyles.css'
+
 export default {
 
 }
