@@ -80,7 +80,7 @@
                   <button type="submit" class="form-submit-button" id="user-management-form-submit-button" @click="saveUser">SALVAR</button>
                 </div>
                 <div class="field">
-                  <button type="reset" class="form-cancel-button" id="user-management-form-cancel-button">CANCELAR</button>
+                  <button type="reset" class="form-cancel-button" id="user-management-form-cancel-button" @click="clearForm">CANCELAR</button>
                 </div>
               </div>
             </fieldset> 
@@ -158,8 +158,8 @@ export default {
   },
 
   mounted() {
-    this.getProductionUnitList()
-    this.getUsers()
+    this.getProductionUnitList();
+    this.getUsers();
   },
 
   methods:{ 
@@ -167,7 +167,7 @@ export default {
       localStorage.removeItem('Token') 
       window.location.href = 'http://localhost:8080'
     },
-
+    
     getProductionUnitList(){
       axios
       .get(api + '/getproductionunitlist', {
@@ -208,6 +208,19 @@ export default {
       .then(() => {  
       console.log(param)
       })
+    },
+
+    clearForm(){
+      this.selectedUser.userName = null,
+      this.selectedUser.name = null,
+      this.selectedUser.userPassword = null,
+      this.selectedUser.confirmUserPassword = null,
+      this.selectedUser.email = null,
+      this.selectedUser.supervisor = false,
+      this.selectedUser.receiveAutonomousWarning = false,
+      this.selectedUser.loginExpiration = null,
+      this.selectedUser.disabled = false,
+      this.selectedUser.unitId = null
     },
 
     increaseTokenTime(){
