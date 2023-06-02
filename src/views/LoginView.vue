@@ -11,7 +11,7 @@
                             <fieldset class="fieldset" id="login-fieldset">
                                 <input type="text" class="text-input" id="user-input" v-model="username" placeholder="USUÁRIO" required autofocus>                                             
                                 <input type="password" class="password-input" id="password-input" v-model="password" placeholder="SENHA" required>                                            
-                                <button type="submit" class="form-submit-button" id="login-form-submit-button">ENTRAR</button> 
+                                <button type="submit" class="form-submit-button" id="login-form-submit-button" @onclick="login">ENTRAR</button> 
                             </fieldset>                                                                                      
                         </form>
                     </div>
@@ -27,7 +27,7 @@
 import '../styles/defaultStyles.css'
 import HeaderComponent from '../components/HeaderComponent.vue'
 import FooterComponent from '../components/FooterComponent.vue'
-import api from '../utilities/global.js'
+import { api } from '../utilities/global.js'
 import { Base64 } from 'js-base64'
 import md5 from 'js-md5'
 import axios from 'axios'

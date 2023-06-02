@@ -14,7 +14,7 @@
             <fieldset class="fieldset" id="user-manager-fieldset">
               <div class="row">
                 <div class="field"> 
-                  <input type="text" class="text-input" id="new-user-input" v-model="selectedUser.userName" placeholder="USUÁRIO" required>
+                  <input type="text" class="text-input" id="new-user-input" v-model="selectedUser.userName" placeholder="USUÁRIO">
                 </div>
                 <div class="field">
                   <select class="unit-select" v-model="selectedUser.unitId" >
@@ -25,24 +25,24 @@
               </div>
               <div class="row">
                 <div class="field">
-                  <input type="password" class="password-input" id="new-password-input" v-model="selectedUser.userPassword" placeholder="SENHA" required>
+                  <input type="password" class="password-input" id="new-password-input" v-model="selectedUser.userPassword" placeholder="SENHA">
                 </div>
                 <div class="field">
-                  <input type="text" class="text-input" id="name-input" v-model="selectedUser.name" placeholder="NOME COMPLETO" required>
+                  <input type="text" class="text-input" id="name-input" v-model="selectedUser.name" placeholder="NOME COMPLETO">
                 </div>
               </div>
               <div class="row">
                 <div class="field">
-                  <input type="password" class="password-input" id="confirm-password-input" v-model="selectedUser.confirmUserPassword" placeholder="CONFIRME SUA SENHA" required>
+                  <input type="password" class="password-input" id="confirm-password-input" v-model="selectedUser.confirmUserPassword" placeholder="CONFIRME SUA SENHA">
                 </div>
                 <div class="field">
-                  <input type="text" class="text-input" id="email-input" v-model="selectedUser.email" placeholder="E-MAIL" required>
+                  <input type="text" class="text-input" id="email-input" v-model="selectedUser.email" placeholder="E-MAIL">
                 </div>
               </div>
               <div class="row">
                 <div class="field">
                   <button class="decrease-token-time" @click.prevent="decreaseTokenTime">-</button>
-                  <input type="number" class="token-time-input" id="token-time-input" v-model="selectedUser.loginExpiration" placeholder="TEMPO DE TOKEN" required/>
+                  <input type="number" class="token-time-input" id="token-time-input" v-model="selectedUser.loginExpiration" placeholder="TEMPO DE TOKEN"/>
                   <button class="increase-token-time" @click.prevent="increaseTokenTime">+</button>
                 </div>
               </div>
@@ -77,7 +77,7 @@
               </div>
               <div class="row">
                 <div class="field">
-                  <button type="submit" class="form-submit-button" id="user-management-form-submit-button" @click="checkFormFields">SALVAR</button>
+                  <button type="submit" class="form-submit-button" id="user-management-form-submit-button" @click="saveUser">SALVAR</button>
                 </div>
                 <div class="field">
                   <button type="reset" class="form-cancel-button" id="user-management-form-cancel-button">CANCELAR</button>
@@ -127,7 +127,7 @@
 import  '../styles/defaultStyles.css'
 import HeaderComponent from '../components/HeaderComponent.vue'
 import FooterComponent from '../components/FooterComponent.vue'
-import api from '../utilities/global.js'
+import { api, getToken } from '../utilities/global.js'
 import { Base64 } from 'js-base64'
 import md5 from 'js-md5'
 import axios from 'axios'
@@ -169,38 +169,24 @@ export default {
     },
 
     getProductionUnitList(){
-      const token = localStorage.getItem('Token')
-    
       axios
       .get(api + '/getproductionunitlist', {
-        headers: {"Authorization": `Bearer ${token}`}})
+        headers: {"Authorization": `Bearer ${getToken}`}})
       .then((response) => {  
       this.productionUnitList = response.data.productionUnitList
       })
     },
 
-    getUsers(){
-      const token = localStorage.getItem('Token')
-
+    getUsers(){ 
       axios
       .get(api + '/getusers', {
-        headers: {"Authorization": `Bearer ${token}`}})
+        headers: {"Authorization": `Bearer ${getToken}`}})
       .then((response) => {  
       this.usersList = response.data
       })
     },
 
-    checkFormFields() {
-      if (Object.values(this.selectedUser).every(field => field !== null) && this.selectedUser.password === this.selectedUser.confirmUserPassword) {
-          this.saveUser();
-      } else {
-        alert("Falha no salvamento do usuário. Verifique a coincidência nos campos de senha e os campos em branco.");
-      }
-    },
-
     saveUser(){
-      const token = localStorage.getItem('Token')
-
       const param = {
         "id": 0,
         "userName": this.selectedUser.userName,
@@ -218,7 +204,7 @@ export default {
 
       axios
       .post(api + '/saveuser', param, {
-        headers: {"Authorization": `Bearer ${token}`}})
+        headers: {"Authorization": `Bearer ${getToken}`}})
       .then(() => {  
       console.log(param)
       })
@@ -323,10 +309,6 @@ menu {
 .token-time-input::-webkit-inner-spin-button{
   -webkit-appearance: none;
 }
-
-/* .token-time-input[type=number]{
-  -moz-appearance: textfield;
-} */
 
 .toggle-input-container {
   display: flex;
