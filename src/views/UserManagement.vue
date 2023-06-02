@@ -2,9 +2,7 @@
   <div id="app">
     <body>
       <header>
-        <div class="logo-container">
-        <img class="logo" alt="Logo" src="../assets/logo-pentagro.png">
-        </div>
+        <HeaderComponent/>
       </header>
       <menu>
         <p class="menu-title">GESTÃO DE USUÁRIOS</p>
@@ -16,29 +14,29 @@
             <fieldset class="fieldset" id="user-manager-fieldset">
               <div class="row">
                 <div class="field"> 
-                  <input type="text" class="text-input" id="new-user-input" v-model="selectedUser.userName" placeholder="USUÁRIO" required>
+                  <input type="text" class="text-input" id="new-user-input" v-model="selectedUser.userName" placeholder="USUÁRIO">
                 </div>
                 <div class="field">
-                  <select class="unit-select" id="unit-select" @click.prevent="getProductionUnitList" v-model="selectedUser.unitId" name="unit">
-                    <option>SELECIONE A UNIDADE</option>
+                  <select class="unit-select" v-model="selectedUser.unitId" >
+                    <option value="null" disabled selected hidden>SELECIONE A UNIDADE</option>
                     <option v-for="unit in productionUnitList" :key="unit.name" :value="unit.id">{{ unit.name }}</option>
                   </select>
                 </div>
               </div>
               <div class="row">
                 <div class="field">
-                  <input type="password" class="password-input" id="new-password-input" v-model="selectedUser.userPassword" placeholder="SENHA" required>
+                  <input type="password" class="password-input" id="new-password-input" v-model="selectedUser.userPassword" placeholder="SENHA">
                 </div>
                 <div class="field">
-                  <input type="text" class="text-input" id="name-input" v-model="selectedUser.name" placeholder="NOME COMPLETO" required>
+                  <input type="text" class="text-input" id="name-input" v-model="selectedUser.name" placeholder="NOME COMPLETO">
                 </div>
               </div>
               <div class="row">
                 <div class="field">
-                  <input type="password" class="password-input" id="confirm-password-input" v-model="selectedUser.confirmUserPassword" placeholder="CONFIRME SUA SENHA" required>
+                  <input type="password" class="password-input" id="confirm-password-input" v-model="selectedUser.confirmUserPassword" placeholder="CONFIRME SUA SENHA">
                 </div>
                 <div class="field">
-                  <input type="email" class="text-input" id="email-input" v-model="selectedUser.email" placeholder="E-MAIL" required>
+                  <input type="text" class="text-input" id="email-input" v-model="selectedUser.email" placeholder="E-MAIL">
                 </div>
               </div>
               <div class="row">
@@ -77,11 +75,15 @@
                   </label>
               </div>
               </div>
+              <div class="row">
+                <div class="field">
+                  <button type="submit" class="form-submit-button" id="user-management-form-submit-button" @click="saveUser">SALVAR</button>
+                </div>
+                <div class="field">
+                  <button type="reset" class="form-cancel-button" id="user-management-form-cancel-button">CANCELAR</button>
+                </div>
+              </div>
             </fieldset> 
-          </div>
-          <div class="buttons-row">
-            <button type="submit" class="form-submit-button" id="user-management-form-submit-button">SALVAR</button>
-            <button type="reset" class="form-cancel-button" id="user-management-form-cancel-button">CANCELAR</button>
           </div>
         </form>
         <div class="users-table-container"> 
@@ -91,7 +93,7 @@
                 <th>CÓDIGO</th>
                 <th>NOME</th>
                 <th>E-MAIL</th>
-                <th>STATUS</th>
+                <th>ATIVO?</th>
                 <th>AÇÕES</th>
               </tr>
             </thead>
@@ -103,53 +105,61 @@
                 <td class="cell">Ativo</td>
                 <td class="cell"> <div class="edit-button-container"> <button class="edit-user">EDITAR</button> </div> </td>
               </tr>
+              <tr class="user-table-item" v-for="user in usersList" :key="user.id">
+                <td class="cell">{{ user.id }}</td>
+                <td class="cell">{{ user.userName }}</td>
+                <td class="cell">{{ user.email }}</td>
+                <td class="cell">{{ user.disabled }}</td>
+                <td class="cell"> <div class="edit-button-container"> <button class="edit-user">EDITAR</button> </div> </td>
+              </tr>
             </tbody> 
           </table>
         </div>
       </main>
-      <footer></footer>
+      <footer>
+        <FooterComponent/>
+      </footer>
     </body>
   </div>
 </template>
 
 <script>
-import  '../styles/global.css'
-// import api from '../services/api.js'
-// import { Base64 } from 'js-base64'
-// import md5 from 'js-md5'
+import  '../styles/defaultStyles.css'
+import HeaderComponent from '../components/HeaderComponent.vue'
+import FooterComponent from '../components/FooterComponent.vue'
+import { api, getToken } from '../utilities/global.js'
+import { Base64 } from 'js-base64'
+import md5 from 'js-md5'
 import axios from 'axios'
 
 export default {
+  components: {
+        HeaderComponent,
+        FooterComponent
+    },
+
   data() {
     return{
       productionUnitList: [],
+      usersList:[],
       selectedUser: {
-        userName: "",
-        name: "",
-        userPassword: "",
-        confirmUserPassword: "",
-        email: "",
+        userName: null,
+        name: null,
+        userPassword: null,
+        confirmUserPassword: null,
+        email: null,
         supervisor: false,
         receiveAutonomousWarning: false,
-        loginExpiration: 0,
+        loginExpiration: null,
         disabled: false,
-        unitId: null 
+        unitId: null
       }
     }
   },
 
   mounted() {
-  //   document.body.innerHTML = 'Aguarde enquanto verificamos sua autenticação...';
-  //   setTimeout(() => {
-  //     if (localStorage.getItem('token')) {
-       
-  //     } else {
-  //       alert('Você precisa estar logado para acessar esta página!');
-  //       window.location.href = 'http://localhost:8080';
-  //     }
-  //   }, 1000); 
-
-
+    this.getProductionUnitList()
+    this.getUsers()
   },
 
   methods:{ 
@@ -157,23 +167,55 @@ export default {
       localStorage.removeItem('Token') 
       window.location.href = 'http://localhost:8080'
     },
+
     getProductionUnitList(){
-      const token = localStorage.getItem('Token')
-    
-    axios
-    .get("http://144.22.150.202:65129/api/user/getproductionunitlist", {
-      headers:
-        {"Authorization": `Bearer ${token}`}
-    })
-    .then((response) => {  
-    this.productionUnitList = response.data.productionUnitList
-    })
+      axios
+      .get(api + '/getproductionunitlist', {
+        headers: {"Authorization": `Bearer ${getToken}`}})
+      .then((response) => {  
+      this.productionUnitList = response.data.productionUnitList
+      })
     },
+
+    getUsers(){ 
+      axios
+      .get(api + '/getusers', {
+        headers: {"Authorization": `Bearer ${getToken}`}})
+      .then((response) => {  
+      this.usersList = response.data
+      })
+    },
+
+    saveUser(){
+      const param = {
+        "id": 0,
+        "userName": this.selectedUser.userName,
+        "name": this.selectedUser.name,
+        "UserPassword": Base64.encode(md5(this.selectedUser.userPassword)),
+        "email": this.selectedUser.email,
+        "improveTeamMember": false,
+        "supervisor": this.selectedUser.supervisor,
+        "receiveAutonomousWarning": this.selectedUser.receiveAutonomousWarning,
+        "loginExpiration": this.selectedUser.loginExpiration,
+        "disabled": this.selectedUser.disabled,
+        "system": "G",
+        "unitId": this.selectedUser.unitId
+      }
+
+      axios
+      .post(api + '/saveuser', param, {
+        headers: {"Authorization": `Bearer ${getToken}`}})
+      .then(() => {  
+      console.log(param)
+      })
+    },
+
     increaseTokenTime(){
       if(this.selectedUser.loginExpiration < 24){ 
       this.selectedUser.loginExpiration++
       }
     },
+
     decreaseTokenTime() {
       if(this.selectedUser.loginExpiration > 0) {
         this.selectedUser.loginExpiration--
@@ -220,7 +262,7 @@ menu {
 .form-container {
   max-width: 1000px;
   padding: 20px;
-  margin-top: 20px;
+  margin: 30px;
   flex-wrap: wrap;
   justify-content: space-between;
 }
@@ -228,11 +270,13 @@ menu {
 .row {
   display: flex;
   justify-content: space-between;
+  margin: 5px;
+
 }
 
 .field {
   flex-basis: 100%; /* Estudar mais sobre */
-  margin: 5px;
+  margin: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -265,10 +309,6 @@ menu {
 .token-time-input::-webkit-inner-spin-button{
   -webkit-appearance: none;
 }
-
-/* .token-time-input[type=number]{
-  -moz-appearance: textfield;
-} */
 
 .toggle-input-container {
   display: flex;
@@ -351,7 +391,7 @@ menu {
     box-shadow: 0px 0px 20px rgba(0.8, 0.8, 0.8, 0.8);
     color: var(--dark-color);
     margin-top: 30px;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
 .users-table {

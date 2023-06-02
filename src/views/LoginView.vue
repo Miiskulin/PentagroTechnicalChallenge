@@ -2,35 +2,41 @@
     <div id="app">
         <body>
             <header> 
-                <div class="logo-container">
-                <img class="logo" alt="Logo" src="../assets/logo-pentagro.png">
-                </div>
+                <HeaderComponent/>
             </header>
-            <main>
-                <div class="form-container" id="login-form-container">
-                    <h2 class="form-title" id="login-form-title">LOGIN</h2>
-                    <form @submit.prevent="login"  class="login-form">   
-                        <fieldset class="fieldset" id="login-fieldset">
-                            <input type="text" class="text-input" id="user-input" v-model="username" placeholder="USUÁRIO" required autofocus>                                             
-                            <input type="password" class="password-input" id="password-input" v-model="password" placeholder="SENHA" required>                                            
-                            <button type="submit" class="form-submit-button" id="login-form-submit-button">ENTRAR</button> 
-                        </fieldset>                                                                                      
-                    </form>
-                </div>
-            </main>
-            <footer></footer>
+                <main>
+                    <div class="form-container" id="login-form-container">
+                        <h2 class="form-title" id="login-form-title">LOGIN</h2>
+                        <form @submit.prevent="login"  class="login-form">   
+                            <fieldset class="fieldset" id="login-fieldset">
+                                <input type="text" class="text-input" id="user-input" v-model="username" placeholder="USUÁRIO" required autofocus>                                             
+                                <input type="password" class="password-input" id="password-input" v-model="password" placeholder="SENHA" required>                                            
+                                <button type="submit" class="form-submit-button" id="login-form-submit-button" @onclick="login">ENTRAR</button> 
+                            </fieldset>                                                                                      
+                        </form>
+                    </div>
+                </main>
+                <footer>
+                    <FooterComponent/>
+                </footer>
         </body>
     </div>
 </template>
 
 <script>
-import  '../styles/global.css'
-// import api from '../services/api.js'
+import '../styles/defaultStyles.css'
+import HeaderComponent from '../components/HeaderComponent.vue'
+import FooterComponent from '../components/FooterComponent.vue'
+import { api } from '../utilities/global.js'
 import { Base64 } from 'js-base64'
 import md5 from 'js-md5'
 import axios from 'axios'
 
 export default {
+    components: {
+        HeaderComponent,
+        FooterComponent
+    },
     data() {
         return{ 
         username: "",
@@ -46,12 +52,11 @@ export default {
             }
 
             axios
-            .post("http://144.22.150.202:65129/api/user/login", param)
+            .post(api + '/login', param)
             .then((response) => { 
             const token = response.data
             localStorage.setItem('Token', token);
             window.location.href ='http://localhost:8080/usermanagement'
-            alert("Login realizado com sucesso!")
             })
             .catch(() => {
                 alert("Falha no login! Verifique as credenciais ou sua conexão com o servidor.")})
