@@ -67,8 +67,12 @@ export default {
 
 <style scoped>
 body {
-    grid-template-rows: 75px 1fr 45px;
+    grid-template-rows: 75px 1fr 35px;
     grid-template-areas: 'header' 'content' 'footer';
+}
+
+main{
+    justify-content: center;
 }
 
 .form-container {
@@ -106,7 +110,7 @@ body {
 }
 
 .form-submit-button:hover {
-    background-color: #525252;
+    opacity: 80%;
     
 }
 </style>

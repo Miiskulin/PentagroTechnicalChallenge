@@ -77,7 +77,7 @@
               </div>
               <div class="row">
                 <div class="field">
-                  <button type="submit" class="form-submit-button" id="user-management-form-submit-button" @click="saveUser">SALVAR</button>
+                  <button type="submit" class="form-submit-button" id="user-management-form-submit-button" @click.prevent="saveUser">SALVAR</button>
                 </div>
                 <div class="field">
                   <button type="reset" class="form-cancel-button" id="user-management-form-cancel-button" @click="clearForm">CANCELAR</button>
@@ -97,22 +97,15 @@
                 <th>AÇÕES</th>
               </tr>
             </thead>
-            <tbody class="user-table-body">
-              <tr class="user-table-item">
-                <td class="cell">01</td>
-                <td class="cell">Pentagro</td>
-                <td class="cell">penta@penta.com.br</td>
-                <td class="cell">Ativo</td>
-                <td class="cell"> <div class="edit-button-container"> <button class="edit-user">EDITAR</button> </div> </td>
-              </tr>
-              <tr class="user-table-item" v-for="user in usersList" :key="user.id">
-                <td class="cell">{{ user.id }}</td>
-                <td class="cell">{{ user.userName }}</td>
-                <td class="cell">{{ user.email }}</td>
-                <td class="cell">{{ user.disabled }}</td>
-                <td class="cell"> <div class="edit-button-container"> <button class="edit-user">EDITAR</button> </div> </td>
-              </tr>
-            </tbody> 
+              <tbody class="user-table-body">
+                <tr class="user-table-item" v-for="user in usersList" :key="user.id">
+                  <td class="user-table-cell">{{ user.id }}</td>
+                  <td class="cell">{{ user.userName }}</td>
+                  <td class="cell">{{ user.email }}</td>
+                  <td class="cell">{{ user.disabled }}</td>
+                  <td class="cell"> <div class="edit-button-container"> <button class="edit-user" @click="editUser(user.id)">EDITAR</button> </div> </td>
+                </tr>
+              </tbody>
           </table>
         </div>
       </main>
@@ -188,7 +181,7 @@ export default {
 
     saveUser(){
       const param = {
-        "id": 0,
+        "id": this.selectedUser.id,
         "userName": this.selectedUser.userName,
         "name": this.selectedUser.name,
         "UserPassword": Base64.encode(md5(this.selectedUser.userPassword)),
@@ -208,6 +201,27 @@ export default {
       .then(() => {  
       console.log(param)
       })
+    },
+
+    editUser(userId){
+      axios
+      .get(api + `/getuserbyid/G/${userId}`, {
+        headers: {"Authorization": `Bearer ${getToken}`}})
+      .then((response) => {  
+      console.log(response.data)
+      this.selectedUser = {
+          userName: response.data.userName,
+          name:  response.data.name,
+          userPassword:  response.data.userpassword,
+          email:  response.data.email,
+          supervisor:  response.data.supervisor,
+          receiveAutonomousWarning:  response.data.receiveAutonomousWarning,
+          loginExpiration:  response.data.loginExpiration,
+          disabled:  response.data.disabled,
+          unitId:  response.data.unitId
+        }
+      })
+
     },
 
     clearForm(){
@@ -241,7 +255,7 @@ export default {
 
 <style scoped>
 body {
-  grid-template-rows: 75px 55px 1fr 45px;
+  grid-template-rows: 75px 55px 1fr 35px;
   grid-template-areas: 'header' 'menu' 'content' 'footer';
 }
 
@@ -269,7 +283,7 @@ menu {
 }
 
 .exit-button:hover {
-  background-color: #f5f5f5f5;
+  opacity: 80%;
 }
 
 .form-container {
@@ -383,7 +397,9 @@ menu {
 }
 
 .form-cancel-button:hover {
-  background-color: #f24f40;
+  /* background-color: #f24f40; */
+  opacity: 80%;
+
 }
 
 .form-submit-button {
@@ -391,13 +407,11 @@ menu {
 }
 
 .form-submit-button:hover {
-    background-color: #00a35a;
+  opacity: 80%;
 }
 .users-table-container {
-    max-width: 900px;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+    min-width: 800px;
+    min-height: 220px;
     background-color: #eef0f2;
     display: flex;
     border-radius: 3px;
@@ -405,21 +419,26 @@ menu {
     color: var(--dark-color);
     margin-top: 30px;
     margin-bottom: 30px;
+    overflow-y: auto;
+    overflow-x: auto;
+    border-bottom: 3px solid #ee7527;
 }
 
 .users-table {
   width: 800px;
   font-size: 20px;
-  padding: 20px;
   border-collapse: collapse;
   border-spacing: 0;
-  border: 2px solid #b8b8b8;
-  /* border-bottom: 3px solid #ee7527; */
 }
 
 .user-table-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
   background-color: #b8b8b8;
   height: 40px;
+  border-left: 2px solid #b8b8b8;
+  border-right: 2px solid #b8b8b8;
 }
 
 .user-table-item {
@@ -427,8 +446,8 @@ menu {
 }
 
 td {
-  border: 2px solid #b8b8b8;
   padding-left: 3px;
+  border: 2px solid #b8b8b8;
 }
 
 .edit-button-container {
@@ -445,6 +464,6 @@ td {
 }
 
 .edit-user:hover {
-  background-color: #F08945;
+  opacity: 85%;
 }
 </style>
