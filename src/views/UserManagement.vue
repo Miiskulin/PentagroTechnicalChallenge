@@ -77,7 +77,7 @@
               </div>
               <div class="row">
                 <div class="field">
-                  <button type="submit" class="form-submit-button" id="user-management-form-submit-button" @click.prevent="saveUser">SALVAR</button>
+                  <button type="submit" class="form-submit-button" id="user-management-form-submit-button" @click.prevent="checkFormFields">SALVAR</button>
                 </div>
                 <div class="field">
                   <button type="reset" class="form-cancel-button" id="user-management-form-cancel-button" @click="clearForm">CANCELAR</button>
@@ -102,7 +102,7 @@
                   <td class="user-table-cell">{{ user.id }}</td>
                   <td class="cell">{{ user.userName }}</td>
                   <td class="cell">{{ user.email }}</td>
-                  <td class="cell">{{ user.disabled }}</td>
+                  <td class="cell">{{ user.disabled === false ? 'Ativo' : 'Desabilitado' }}</td>
                   <td class="cell"> <div class="edit-button-container"> <button class="edit-user" @click="editUser(user.id)">EDITAR</button> </div> </td>
                 </tr>
               </tbody>
@@ -155,32 +155,23 @@ export default {
     this.getUsers();
   },
 
-  methods:{ 
-    exit(){
-      localStorage.removeItem('Token') 
-      window.location.href = 'http://localhost:8080'
-    },
-    
-    getProductionUnitList(){
-      axios
-      .get(api + '/getproductionunitlist', {
-        headers: {"Authorization": `Bearer ${getToken}`}})
-      .then((response) => {  
-      this.productionUnitList = response.data.productionUnitList
-      })
-    },
+  methods: { 
+    checkFormFields(){
+      let selectedUserValues = Object.values(this.selectedUser)
 
-    getUsers(){ 
-      axios
-      .get(api + '/getusers', {
-        headers: {"Authorization": `Bearer ${getToken}`}})
-      .then((response) => {  
-      this.usersList = response.data
-      })
+      if(selectedUserValues.every(value => value !== '' && value !== null)){
+        if(this.selectedUser.userPassword == this.selectedUser.confirmUserPassword){
+          this.saveUser()
+        } else {
+          alert ('As senhas não conferem. Verifique-as e tente novamente.')
+        }
+      } else {
+        alert('Você não pode salvar enquanto existirem campos vazios. Preencha-os e tente novamente')
+      }
     },
 
     saveUser(){
-      const param = {
+        let param = {
         "id": this.selectedUser.id,
         "userName": this.selectedUser.userName,
         "name": this.selectedUser.name,
@@ -195,33 +186,52 @@ export default {
         "unitId": this.selectedUser.unitId
       }
 
+        axios
+        .post(api + '/saveuser', param, {
+          headers: {"Authorization": `Bearer ${getToken}`}})
+        .then(() => {  
+        console.log(param)
+        alert("Usuário salvo com sucesso!")
+        location.reload()
+        })
+    },
+
+    getUsers(){ 
       axios
-      .post(api + '/saveuser', param, {
+      .get(api + '/getusers', {
         headers: {"Authorization": `Bearer ${getToken}`}})
-      .then(() => {  
-      console.log(param)
+      .then((response) => {  
+      this.usersList = response.data
       })
     },
 
-    editUser(userId){
-      axios
-      .get(api + `/getuserbyid/G/${userId}`, {
-        headers: {"Authorization": `Bearer ${getToken}`}})
-      .then((response) => {  
-      console.log(response.data)
-      this.selectedUser = {
-          userName: response.data.userName,
-          name:  response.data.name,
-          userPassword:  response.data.userpassword,
-          email:  response.data.email,
-          supervisor:  response.data.supervisor,
-          receiveAutonomousWarning:  response.data.receiveAutonomousWarning,
-          loginExpiration:  response.data.loginExpiration,
-          disabled:  response.data.disabled,
-          unitId:  response.data.unitId
-        }
-      })
+      editUser(userId){
+        axios
+        .get(api + `/getuserbyid/G/${userId}`, {
+          headers: {"Authorization": `Bearer ${getToken}`}})
+        .then((response) => {  
+        console.log(response.data)
+        this.selectedUser = {
+            userName: response.data.userName,
+            name:  response.data.name,
+            userPassword:  response.data.userpassword,
+            email:  response.data.email,
+            supervisor:  response.data.supervisor,
+            receiveAutonomousWarning:  response.data.receiveAutonomousWarning,
+            loginExpiration:  response.data.loginExpiration,
+            disabled:  response.data.disabled,
+            unitId:  response.data.unitId
+          }
+        })
+      },
 
+    getProductionUnitList(){
+      axios
+      .get(api + '/getproductionunitlist', {
+        headers: {"Authorization": `Bearer ${getToken}`}})
+        .then((response) => {  
+          this.productionUnitList = response.data.productionUnitList
+      })
     },
 
     clearForm(){
@@ -247,6 +257,11 @@ export default {
       if(this.selectedUser.loginExpiration > 0) {
         this.selectedUser.loginExpiration--
       }
+    },
+    
+    exit(){
+      localStorage.removeItem('Token') 
+      window.location.href = 'http://localhost:8080'
     }
   }
 }
@@ -411,7 +426,7 @@ menu {
 }
 .users-table-container {
     min-width: 800px;
-    min-height: 220px;
+    min-height: 300px;
     background-color: #eef0f2;
     display: flex;
     border-radius: 3px;

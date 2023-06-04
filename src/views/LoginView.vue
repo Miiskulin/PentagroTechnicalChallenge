@@ -46,7 +46,7 @@ export default {
 
     methods: {  
        async login() {
-            const param = {  
+            let param = {  
             "Username": Base64.encode(this.username),
             "UserPassword": Base64.encode(md5(this.password))
             }
@@ -54,7 +54,7 @@ export default {
             axios
             .post(api + '/login', param)
             .then((response) => { 
-            const token = response.data
+            let token = response.data
             localStorage.setItem('Token', token);
             window.location.href ='http://localhost:8080/usermanagement'
             })
