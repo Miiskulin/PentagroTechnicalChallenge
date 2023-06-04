@@ -27,7 +27,7 @@
 import '../styles/defaultStyles.css'
 import HeaderComponent from '../components/HeaderComponent.vue'
 import FooterComponent from '../components/FooterComponent.vue'
-import { api } from '../utilities/global.js'
+import api from '../services/api.js'
 import { Base64 } from 'js-base64'
 import md5 from 'js-md5'
 import axios from 'axios'
@@ -37,6 +37,7 @@ export default {
         HeaderComponent,
         FooterComponent
     },
+
     data() {
         return{ 
         username: "",
@@ -46,17 +47,18 @@ export default {
 
     methods: {  
        async login() {
-            const param = {  
+            let param = {  
             "Username": Base64.encode(this.username),
             "UserPassword": Base64.encode(md5(this.password))
             }
 
             axios
             .post(api + '/login', param)
-            .then((response) => { 
-            const token = response.data
-            localStorage.setItem('Token', token);
-            window.location.href ='http://localhost:8080/usermanagement'
+            .then((response) => {
+            let token = response.data
+            localStorage.setItem('Token', token)
+            setTimeout(() => this.$router.push('/usermanagement'), 300)
+            setTimeout(() => alert('Logado com sucesso'), 400)
             })
             .catch(() => {
                 alert("Falha no login! Verifique as credenciais ou sua conexão com o servidor.")})
@@ -67,8 +69,12 @@ export default {
 
 <style scoped>
 body {
-    grid-template-rows: 75px 1fr 45px;
+    grid-template-rows: 75px 1fr 35px;
     grid-template-areas: 'header' 'content' 'footer';
+}
+
+main{
+    justify-content: center;
 }
 
 .form-container {
@@ -106,7 +112,7 @@ body {
 }
 
 .form-submit-button:hover {
-    background-color: #525252;
+    opacity: 80%;
     
 }
 </style>

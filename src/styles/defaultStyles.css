@@ -19,17 +19,31 @@ body {
     height: 100vh;
     display: grid;
     grid-template-columns: 1fr;
-    overflow: visible;
 }
 
 main {
     grid-area: content;
     background-color: #daddd8;
     display: flex;
-    justify-content: center;
     align-items: center;
     flex-direction: column;
+    overflow: overlay;
+    overflow-x: hidden;
 }
+
+main::-webkit-scrollbar,
+.users-table-container::-webkit-scrollbar {
+    background-color: transparent;
+    background-clip: padding-box;
+    width: 10px;
+}
+
+main::-webkit-scrollbar-thumb,
+.users-table-container::-webkit-scrollbar-thumb {
+    background-color: #999;
+    border-radius: 8px;
+}
+
 
 .form-container {
     background-color: #eef0f2;
