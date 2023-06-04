@@ -120,7 +120,7 @@
 import  '../styles/defaultStyles.css'
 import HeaderComponent from '../components/HeaderComponent.vue'
 import FooterComponent from '../components/FooterComponent.vue'
-import { api, getToken } from '../utilities/global.js'
+import api from '../services/api.js'
 import { Base64 } from 'js-base64'
 import md5 from 'js-md5'
 import axios from 'axios'
@@ -133,6 +133,7 @@ export default {
 
   data() {
     return{
+      getToken: null,
       productionUnitList: [],
       usersList:[],
       selectedUser: {
@@ -150,12 +151,31 @@ export default {
     }
   },
 
-  mounted() {
-    this.getProductionUnitList();
-    this.getUsers();
+  beforeMount() {
+    this.getToken = localStorage.getItem('Token')
+    this.getProductionUnitList()
+    this.getUsers()
   },
 
-  methods: { 
+  methods: {
+    getUsers(){ 
+      axios
+      .get(api + '/getusers', {
+        headers: {"Authorization": `Bearer ${this.getToken}`}})
+      .then((response) => {  
+        this.usersList = response.data
+    })
+    },  
+
+    getProductionUnitList(){
+      axios
+      .get(api + '/getproductionunitlist', {
+        headers: {"Authorization": `Bearer ${this.getToken}`}})
+      .then((response) => {  
+          this.productionUnitList = response.data.productionUnitList
+      })
+    },
+
     checkFormFields(){
       let selectedUserValues = Object.values(this.selectedUser)
 
@@ -172,7 +192,7 @@ export default {
 
     saveUser(){
         let param = {
-        "id": this.selectedUser.id,
+        "id": 0,
         "userName": this.selectedUser.userName,
         "name": this.selectedUser.name,
         "UserPassword": Base64.encode(md5(this.selectedUser.userPassword)),
@@ -188,50 +208,12 @@ export default {
 
         axios
         .post(api + '/saveuser', param, {
-          headers: {"Authorization": `Bearer ${getToken}`}})
+          headers: {"Authorization": `Bearer ${this.getToken}`}})
         .then(() => {  
         console.log(param)
         alert("Usuário salvo com sucesso!")
         location.reload()
         })
-    },
-
-    getUsers(){ 
-      axios
-      .get(api + '/getusers', {
-        headers: {"Authorization": `Bearer ${getToken}`}})
-      .then((response) => {  
-      this.usersList = response.data
-      })
-    },
-
-      editUser(userId){
-        axios
-        .get(api + `/getuserbyid/G/${userId}`, {
-          headers: {"Authorization": `Bearer ${getToken}`}})
-        .then((response) => {  
-        console.log(response.data)
-        this.selectedUser = {
-            userName: response.data.userName,
-            name:  response.data.name,
-            userPassword:  response.data.userpassword,
-            email:  response.data.email,
-            supervisor:  response.data.supervisor,
-            receiveAutonomousWarning:  response.data.receiveAutonomousWarning,
-            loginExpiration:  response.data.loginExpiration,
-            disabled:  response.data.disabled,
-            unitId:  response.data.unitId
-          }
-        })
-      },
-
-    getProductionUnitList(){
-      axios
-      .get(api + '/getproductionunitlist', {
-        headers: {"Authorization": `Bearer ${getToken}`}})
-        .then((response) => {  
-          this.productionUnitList = response.data.productionUnitList
-      })
     },
 
     clearForm(){
@@ -247,6 +229,31 @@ export default {
       this.selectedUser.unitId = null
     },
 
+    editUser(userId){
+      axios
+      .get(api + `/getuserbyid/G/${userId}`, {
+        headers: {"Authorization": `Bearer ${this.getToken}`}})
+      .then((response) => {  
+      console.log(response.data)
+      this.selectedUser = {
+          userName: response.data.userName,
+          name:  response.data.name,
+          userPassword:  response.data.userpassword,
+          email:  response.data.email,
+          supervisor:  response.data.supervisor,
+          receiveAutonomousWarning:  response.data.receiveAutonomousWarning,
+          loginExpiration:  response.data.loginExpiration,
+          disabled:  response.data.disabled,
+          unitId:  response.data.unitId
+        }
+      })
+    },
+
+    exit(){
+      localStorage.removeItem('Token') 
+      this.$router.push('/')
+    },
+
     increaseTokenTime(){
       if(this.selectedUser.loginExpiration < 24){ 
       this.selectedUser.loginExpiration++
@@ -257,11 +264,6 @@ export default {
       if(this.selectedUser.loginExpiration > 0) {
         this.selectedUser.loginExpiration--
       }
-    },
-    
-    exit(){
-      localStorage.removeItem('Token') 
-      window.location.href = 'http://localhost:8080'
     }
   }
 }

@@ -12,8 +12,16 @@ const routes = [
     },
     { 
         path: '/usermanagement', 
-        component: UserManagement
-    },
+        component: UserManagement,
+        beforeEnter: function (to, from, next) {
+            if (localStorage.getItem('Token')) {
+                next();
+            } else {
+                alert('Você precisa estar logado para acessar essa página.');
+                next('/');
+            }
+        }
+    }
 ]
 
 

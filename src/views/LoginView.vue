@@ -27,7 +27,7 @@
 import '../styles/defaultStyles.css'
 import HeaderComponent from '../components/HeaderComponent.vue'
 import FooterComponent from '../components/FooterComponent.vue'
-import { api } from '../utilities/global.js'
+import api from '../services/api.js'
 import { Base64 } from 'js-base64'
 import md5 from 'js-md5'
 import axios from 'axios'
@@ -37,6 +37,7 @@ export default {
         HeaderComponent,
         FooterComponent
     },
+
     data() {
         return{ 
         username: "",
@@ -53,10 +54,11 @@ export default {
 
             axios
             .post(api + '/login', param)
-            .then((response) => { 
+            .then((response) => {
             let token = response.data
-            localStorage.setItem('Token', token);
-            window.location.href ='http://localhost:8080/usermanagement'
+            localStorage.setItem('Token', token)
+            setTimeout(() => this.$router.push('/usermanagement'), 300)
+            setTimeout(() => alert('Logado com sucesso'), 400)
             })
             .catch(() => {
                 alert("Falha no login! Verifique as credenciais ou sua conexão com o servidor.")})
