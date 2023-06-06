@@ -59,7 +59,7 @@
                 <div class="field" id="treat-occurrences-input">
                   <label class="toggle-input-container">
                     TRATAR OCORRENCIAS
-                    <input type="checkbox" class="toggle-input-button" v-model="selectedUser.improveTeamMember">
+                    <input type="checkbox" class="toggle-input-button" v-model="selectedUser.supervisor">
                     <div class="slider-area">
                       <button class="slider-button"></button>
                     </div>
@@ -192,7 +192,7 @@ export default {
 
     saveUser(){
         let param = {
-        "id": 0,
+        "id": this.selectedUser.id,
         "userName": this.selectedUser.userName,
         "name": this.selectedUser.name,
         "UserPassword": Base64.encode(md5(this.selectedUser.userPassword)),
@@ -236,6 +236,7 @@ export default {
       .then((response) => {  
       console.log(response.data)
       this.selectedUser = {
+          id: response.data.id,
           userName: response.data.userName,
           name:  response.data.name,
           userPassword:  response.data.userpassword,
