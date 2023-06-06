@@ -87,7 +87,6 @@ main::-webkit-scrollbar-thumb,
 .form-cancel-button,
 .form-submit-button {
     border-style: none;
-    /* display: block; */
     border-radius: 5px;
 }
 
@@ -107,4 +106,5 @@ main::-webkit-scrollbar-thumb,
 .form-submit-button:hover {
     transition: 0.2s;
     cursor: pointer; 
+    opacity: 85%;
 }

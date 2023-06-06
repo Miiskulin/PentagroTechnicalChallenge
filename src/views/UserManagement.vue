@@ -245,6 +245,7 @@ export default {
           receiveAutonomousWarning:  response.data.receiveAutonomousWarning,
           loginExpiration:  response.data.loginExpiration,
           disabled:  response.data.disabled,
+          system: response.data.system,
           unitId:  response.data.unitId
         }
       })
@@ -298,10 +299,6 @@ menu {
   margin-right: 15px;
   width: 90px;
   padding: 4px;
-}
-
-.exit-button:hover {
-  opacity: 80%;
 }
 
 .form-container {
@@ -410,23 +407,14 @@ menu {
     color: var(--font-light-color);
 }
 
-.form-cancel-button {
-  background-color: #ef2917;
-}
-
-.form-cancel-button:hover {
-  /* background-color: #f24f40; */
-  opacity: 80%;
-
-}
-
 .form-submit-button {
   background-color: #008148;
 }
 
-.form-submit-button:hover {
-  opacity: 80%;
+.form-cancel-button {
+  background-color: #ef2917;
 }
+
 .users-table-container {
     min-width: 800px;
     min-height: 300px;
@@ -479,9 +467,5 @@ td {
   padding: 5px;
   width: 60px;
   background-color: #ee7527;
-}
-
-.edit-user:hover {
-  opacity: 85%;
 }
 </style>
