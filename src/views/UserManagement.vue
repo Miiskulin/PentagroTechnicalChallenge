@@ -9,6 +9,9 @@
         <button class="exit-button" id="exit-button" @click.prevent="exit">SAIR</button>
       </menu>
       <main>
+        <div class="message-component">
+          <MessageComponent ref="messageComponent"/>
+        </div>
         <form class="user-management-form">
           <div class="form-container" id="user-management-form-container">
             <fieldset class="fieldset" id="user-manager-fieldset">
@@ -17,10 +20,7 @@
                   <input type="text" class="text-input" id="new-user-input" v-model="selectedUser.userName" placeholder="USUÁRIO">
                 </div>
                 <div class="field">
-                  <select class="unit-select" v-model="selectedUser.unitId" >
-                    <option value="null" disabled selected hidden>SELECIONE A UNIDADE</option>
-                    <option v-for="unit in productionUnitList" :key="unit.name" :value="unit.id">{{ unit.name }}</option>
-                  </select>
+                  <input type="text" class="text-input" id="name-input" v-model="selectedUser.name" placeholder="NOME COMPLETO">
                 </div>
               </div>
               <div class="row">
@@ -28,15 +28,18 @@
                   <input type="password" class="password-input" id="new-password-input" v-model="selectedUser.userPassword" placeholder="SENHA">
                 </div>
                 <div class="field">
-                  <input type="text" class="text-input" id="name-input" v-model="selectedUser.name" placeholder="NOME COMPLETO">
+                  <input type="password" class="password-input" id="confirm-password-input" v-model="selectedUser.confirmUserPassword" placeholder="CONFIRME SUA SENHA">
                 </div>
               </div>
               <div class="row">
                 <div class="field">
-                  <input type="password" class="password-input" id="confirm-password-input" v-model="selectedUser.confirmUserPassword" placeholder="CONFIRME SUA SENHA">
+                  <input type="text" class="text-input" id="email-input" v-model="selectedUser.email" placeholder="E-MAIL">
                 </div>
                 <div class="field">
-                  <input type="text" class="text-input" id="email-input" v-model="selectedUser.email" placeholder="E-MAIL">
+                  <select class="unit-select" v-model="selectedUser.unitId" >
+                    <option value="null" disabled selected hidden>SELECIONE A UNIDADE</option>
+                    <option v-for="unit in productionUnitList" :key="unit.name" :value="unit.id">{{ unit.name }}</option>
+                  </select>
                 </div>
               </div>
               <div class="row">
@@ -83,7 +86,7 @@
                   <button type="reset" class="form-cancel-button" id="user-management-form-cancel-button" @click="clearForm">CANCELAR</button>
                 </div>
               </div>
-            </fieldset> 
+            </fieldset>
           </div>
         </form>
         <div class="users-table-container"> 
@@ -100,7 +103,7 @@
               <tbody class="user-table-body">
                 <tr class="user-table-item" v-for="user in usersList" :key="user.id">
                   <td class="user-table-cell">{{ user.id }}</td>
-                  <td class="cell">{{ user.userName }}</td>
+                  <td class="cell">{{ user.name }}</td>
                   <td class="cell">{{ user.email }}</td>
                   <td class="cell">{{ user.disabled === false ? 'Ativo' : 'Desabilitado' }}</td>
                   <td class="cell"> <div class="edit-button-container"> <button class="edit-user" @click="editUser(user.id)">EDITAR</button> </div> </td>
@@ -120,6 +123,7 @@
 import  '../styles/defaultStyles.css'
 import HeaderComponent from '../components/HeaderComponent.vue'
 import FooterComponent from '../components/FooterComponent.vue'
+import MessageComponent from '../components/MessageComponent.vue'
 import api from '../services/api.js'
 import { Base64 } from 'js-base64'
 import md5 from 'js-md5'
@@ -128,7 +132,8 @@ import axios from 'axios'
 export default {
   components: {
         HeaderComponent,
-        FooterComponent
+        FooterComponent,
+        MessageComponent
     },
 
   data() {
@@ -183,10 +188,10 @@ export default {
         if(this.selectedUser.userPassword == this.selectedUser.confirmUserPassword){
           this.saveUser()
         } else {
-          alert ('As senhas não conferem. Verifique-as e tente novamente.')
+          this.$refs.messageComponent.showAlert('AS SENHAS NÃO CONFEREM!', 'error')
         }
       } else {
-        alert('Você não pode salvar enquanto existirem campos vazios. Preencha-os e tente novamente')
+        this.$refs.messageComponent.showAlert('VOCÊ NÃO PODE SALVAR ENQUANTO EXISTIREM CAMPOS VAZIOS.', 'error')
       }
     },
 
@@ -211,8 +216,9 @@ export default {
           headers: {"Authorization": `Bearer ${this.getToken}`}})
         .then(() => {  
         console.log(param)
-        alert("Usuário salvo com sucesso!")
-        location.reload()
+        // alert("Usuário salvo com sucesso!")
+        this.$refs.messageComponent.showAlert('USUÁRIO SALVO COM SUCESSO!', 'success')
+        // location.reload()
         })
     },
 
@@ -245,8 +251,11 @@ export default {
           receiveAutonomousWarning:  response.data.receiveAutonomousWarning,
           loginExpiration:  response.data.loginExpiration,
           disabled:  response.data.disabled,
+          system: response.data.system,
           unitId:  response.data.unitId
         }
+
+        this.$refs.messageComponent.showAlert(`Usuário ${this.selectedUser.name} selecionado!`, 'success')
       })
     },
 
@@ -300,8 +309,10 @@ menu {
   padding: 4px;
 }
 
-.exit-button:hover {
-  opacity: 80%;
+.message-component {
+  position: absolute;
+  margin-top: 15px;
+  z-index: 9999;
 }
 
 .form-container {
@@ -410,23 +421,14 @@ menu {
     color: var(--font-light-color);
 }
 
-.form-cancel-button {
-  background-color: #ef2917;
-}
-
-.form-cancel-button:hover {
-  /* background-color: #f24f40; */
-  opacity: 80%;
-
-}
-
 .form-submit-button {
   background-color: #008148;
 }
 
-.form-submit-button:hover {
-  opacity: 80%;
+.form-cancel-button {
+  background-color: #ef2917;
 }
+
 .users-table-container {
     min-width: 800px;
     min-height: 300px;
@@ -479,9 +481,5 @@ td {
   padding: 5px;
   width: 60px;
   background-color: #ee7527;
-}
-
-.edit-user:hover {
-  opacity: 85%;
 }
 </style>

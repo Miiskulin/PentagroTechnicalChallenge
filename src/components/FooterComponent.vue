@@ -10,7 +10,7 @@
 import '../styles/defaultStyles.css'
 
 export default {
-
+  name: 'FooterComponent'
 }
 </script>
 

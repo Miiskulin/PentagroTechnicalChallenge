@@ -5,6 +5,9 @@
                 <HeaderComponent/>
             </header>
                 <main>
+                    <div class="message-container"> 
+                        <MessageComponent ref="messageComponent"/>
+                    </div>
                     <div class="form-container" id="login-form-container">
                         <h2 class="form-title" id="login-form-title">LOGIN</h2>
                         <form @submit.prevent="login"  class="login-form">   
@@ -27,6 +30,7 @@
 import '../styles/defaultStyles.css'
 import HeaderComponent from '../components/HeaderComponent.vue'
 import FooterComponent from '../components/FooterComponent.vue'
+import MessageComponent from '../components/MessageComponent.vue'
 import api from '../services/api.js'
 import { Base64 } from 'js-base64'
 import md5 from 'js-md5'
@@ -35,7 +39,8 @@ import axios from 'axios'
 export default {
     components: {
         HeaderComponent,
-        FooterComponent
+        FooterComponent,
+        MessageComponent
     },
 
     data() {
@@ -57,11 +62,12 @@ export default {
             .then((response) => {
             let token = response.data
             localStorage.setItem('Token', token)
+            this.$refs.messageComponent.showAlert('LOGIN REALIZADO COM SUCESSO!', 'success')
             setTimeout(() => this.$router.push('/usermanagement'), 300)
-            setTimeout(() => alert('Logado com sucesso'), 400)
             })
             .catch(() => {
-                alert("Falha no login! Verifique as credenciais ou sua conexão com o servidor.")})
+                this.$refs.messageComponent.showAlert('FALHA AO REALIZAR O LOGIN. VERIFIQUE AS CREDENCIAIS OU A CONXÃO COM O SERVIDOR.', 'error')
+            })
         }
     }
 }
@@ -75,6 +81,13 @@ body {
 
 main{
     justify-content: center;
+}
+
+.message-container {
+    position: absolute;
+    bottom: 45px;
+    right: 10px;
+    z-index: 9999;
 }
 
 .form-container {
