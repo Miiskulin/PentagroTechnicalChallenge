@@ -12,7 +12,7 @@ const routes = [
     },
     { 
         path: '/usermanagement', 
-        component: UserManagement,
+        component: UserManagement
         beforeEnter: function (to, from, next) {
             if (localStorage.getItem('Token')) {
                 next();

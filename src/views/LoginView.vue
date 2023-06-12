@@ -5,7 +5,7 @@
                 <HeaderComponent/>
             </header>
                 <main>
-                    <div class="message-container"> 
+                    <div class="message-component-container"> 
                         <MessageComponent ref="messageComponent"/>
                     </div>
                     <div class="form-container" id="login-form-container">
@@ -83,7 +83,7 @@ main{
     justify-content: center;
 }
 
-.message-container {
+.message-component-container {
     position: absolute;
     bottom: 45px;
     right: 10px;
