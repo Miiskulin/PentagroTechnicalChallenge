@@ -9,7 +9,7 @@
         <button class="exit-button" id="exit-button" @click.prevent="exit">SAIR</button>
       </menu>
       <main>
-        <div class="message-component">
+        <div class="message-component-container">
           <MessageComponent ref="messageComponent"/>
         </div>
         <form class="user-management-form">
@@ -309,7 +309,7 @@ menu {
   padding: 4px;
 }
 
-.message-component {
+.message-component-container {
   position: absolute;
   margin-top: 15px;
   z-index: 9999;
@@ -410,42 +410,35 @@ menu {
   left: 23px;
 }
 
-.buttons-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 20px;
-}
-
-.form-cancel-button,
-.form-submit-button {
-    color: var(--font-light-color);
-}
 
 .form-submit-button {
   background-color: #008148;
+  color: var(--font-light-color);
 }
 
 .form-cancel-button {
   background-color: #ef2917;
+  color: var(--font-light-color);
 }
 
+
 .users-table-container {
-    min-width: 800px;
-    min-height: 300px;
+    width: 900px;
+    min-height: 200px;
     background-color: #eef0f2;
     display: flex;
-    border-radius: 3px;
+    border-radius: 7px;
     box-shadow: 0px 0px 20px rgba(0.8, 0.8, 0.8, 0.8);
     color: var(--dark-color);
-    margin-top: 30px;
-    margin-bottom: 30px;
+    margin: 30px;
     overflow-y: auto;
     overflow-x: auto;
     border-bottom: 3px solid #ee7527;
 }
 
 .users-table {
-  width: 800px;
+  width: 900px;
+  min-height: 200px;
   font-size: 20px;
   border-collapse: collapse;
   border-spacing: 0;
@@ -481,5 +474,17 @@ td {
   padding: 5px;
   width: 60px;
   background-color: #ee7527;
+}
+
+@media (min-height: 900px){
+  main {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .message-component-container {
+    bottom: 45px;
+    right: 10px;
+}
 }
 </style>
