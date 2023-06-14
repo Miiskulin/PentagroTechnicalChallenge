@@ -1,11 +1,11 @@
 <template>
-    <div class="app">
-        <header> 
-            <div class="logo-container">
-                <img class="logo" alt="Logo" src="../assets/logo-pentagro.png">
-            </div>
-        </header>
-    </div>
+  <div class="app">
+    <header> 
+      <div class="logo-container">
+        <img class="logo" alt="Logo" src="../assets/logo-pentagro.png">
+      </div>
+    </header>
+  </div>
 </template>
 
 <script>

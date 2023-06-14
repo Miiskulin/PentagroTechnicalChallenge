@@ -8,15 +8,27 @@ Vue.use(VueRouter)
 const routes = [
     { 
         path: '/', 
-        component: LoginView 
+        component: LoginView,
+        meta: {
+            title: 'Login'
+        },
+        beforeEnter: function (to, from, next) {
+            document.title = to.meta.title
+            next()
+        }
     },
     { 
         path: '/usermanagement', 
-        component: UserManagement
+        component: UserManagement,
+        meta: {
+            title: 'Gestão de usuários'
+        },
         beforeEnter: function (to, from, next) {
             if (localStorage.getItem('Token')) {
-                next();
+                document.title = to.meta.title
+                next()
             } else {
+                document.title = to.meta.title
                 alert('Você precisa estar logado para acessar essa página.');
                 next('/');
             }

@@ -215,10 +215,9 @@ export default {
         .post(api + '/saveuser', param, {
           headers: {"Authorization": `Bearer ${this.getToken}`}})
         .then(() => {  
-        console.log(param)
-        // alert("Usuário salvo com sucesso!")
         this.$refs.messageComponent.showAlert('USUÁRIO SALVO COM SUCESSO!', 'success')
-        // location.reload()
+        this.clearForm()
+        this.getUsers()
         })
     },
 
@@ -240,7 +239,6 @@ export default {
       .get(api + `/getuserbyid/G/${userId}`, {
         headers: {"Authorization": `Bearer ${this.getToken}`}})
       .then((response) => {  
-      console.log(response.data)
       this.selectedUser = {
           id: response.data.id,
           userName: response.data.userName,
@@ -282,7 +280,7 @@ export default {
 
 <style scoped>
 body {
-  grid-template-rows: 75px 55px 1fr 35px;
+  grid-template-rows: 65px 50px 1fr 30px;
   grid-template-areas: 'header' 'menu' 'content' 'footer';
 }
 
@@ -317,6 +315,7 @@ menu {
 
 .form-container {
   max-width: 1000px;
+  max-height: 700px;
   padding: 20px;
   margin: 30px;
   flex-wrap: wrap;
@@ -485,6 +484,11 @@ td {
   .message-component-container {
     bottom: 45px;
     right: 10px;
-}
+  }
+
+  .users-table,
+  .users-table-container {
+    max-height: 560px;
+  }
 }
 </style>
