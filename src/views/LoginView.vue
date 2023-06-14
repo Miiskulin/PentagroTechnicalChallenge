@@ -1,29 +1,29 @@
 <template>
-    <div id="app">
-        <body>
-            <header> 
-                <HeaderComponent/>
-            </header>
-                <main>
-                    <div class="message-component-container"> 
-                        <MessageComponent ref="messageComponent"/>
-                    </div>
-                    <div class="form-container" id="login-form-container">
-                        <h2 class="form-title" id="login-form-title">LOGIN</h2>
-                        <form @submit.prevent="login"  class="login-form">   
-                            <fieldset class="fieldset" id="login-fieldset">
-                                <input type="text" class="text-input" id="user-input" v-model="username" placeholder="USUÁRIO" required autofocus>                                             
-                                <input type="password" class="password-input" id="password-input" v-model="password" placeholder="SENHA" required>                                            
-                                <button type="submit" class="form-submit-button" id="login-form-submit-button" @onclick="login">ENTRAR</button> 
-                            </fieldset>                                                                                      
-                        </form>
-                    </div>
-                </main>
-                <footer>
-                    <FooterComponent/>
-                </footer>
-        </body>
-    </div>
+  <div id="app">
+    <body>
+      <header>
+        <HeaderComponent/>
+      </header>
+      <main>
+        <div class="message-component-container"> 
+          <MessageComponent ref="messageComponent"/>
+        </div>
+        <div class="form-container" id="login-form-container">
+          <h2 class="form-title" id="login-form-title">LOGIN</h2>
+          <form @submit.prevent="login"  class="login-form">   
+            <fieldset class="fieldset" id="login-fieldset">
+             <input type="text" class="text-input" id="user-input" v-model="username" placeholder="USUÁRIO" required autofocus>                                             
+              <input type="password" class="password-input" id="password-input" v-model="password" placeholder="SENHA" required>                                            
+              <button type="submit" class="form-submit-button" id="login-form-submit-button" @onclick="login">ENTRAR</button> 
+            </fieldset>                                                                                      
+          </form>
+        </div>
+      </main>
+      <footer>
+        <FooterComponent/>
+      </footer>
+    </body>
+  </div>
 </template>
 
 <script>
@@ -51,7 +51,7 @@ export default {
     },
 
     methods: {  
-       async login() {
+        async login() {
             let param = {  
             "Username": Base64.encode(this.username),
             "UserPassword": Base64.encode(md5(this.password))
@@ -63,7 +63,7 @@ export default {
             let token = response.data
             localStorage.setItem('Token', token)
             this.$refs.messageComponent.showAlert('LOGIN REALIZADO COM SUCESSO!', 'success')
-            setTimeout(() => this.$router.push('/usermanagement'), 300)
+            setTimeout(() => this.$router.push('/usermanagement'), 600)
             })
             .catch(() => {
                 this.$refs.messageComponent.showAlert('FALHA AO REALIZAR O LOGIN. VERIFIQUE AS CREDENCIAIS OU A CONXÃO COM O SERVIDOR.', 'error')
@@ -75,7 +75,7 @@ export default {
 
 <style scoped>
 body {
-    grid-template-rows: 75px 1fr 35px;
+    grid-template-rows: 75px 1fr 30px;
     grid-template-areas: 'header' 'content' 'footer';
 }
 
